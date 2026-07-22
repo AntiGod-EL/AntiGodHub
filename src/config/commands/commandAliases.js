@@ -9,7 +9,7 @@ export const commandAliases = {
     'cash': 'balance',
 
     'dep': 'deposit',
-    'with': 'withdraw',
+    'wd': 'withdraw',
     'work': 'work',
     'daily': 'daily',
     'gamble': 'gamble',
