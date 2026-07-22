@@ -188,8 +188,8 @@ export const botConfig = {
     // Command cooldowns (milliseconds).
     cooldowns: {
       daily: 24 * 60 * 60 * 1000,
-      work: 15 * 60,
-      crime: 60 * 60,
+      work: 15 *  *  * 1000,
+      crime: 60 *  *  * 1000,
       rob: 2 * 60 * 60 * 1000,
     },
 
