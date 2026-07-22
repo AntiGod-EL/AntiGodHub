@@ -4,7 +4,7 @@ import { botConfig } from '../bot.js';
 const { currency } = botConfig.economy;
 
 export const shopConfig = {
-    name: 'TitanBot Shop',
+    name: 'AntiGodHub Shop',
     currency: currency.name,
     currencyName: currency.name,
     currencyNamePlural: currency.namePlural || `${currency.name}s`,
@@ -19,7 +19,7 @@ export const shopConfig = {
             itemTypes: ['consumable']
         },
         {
-            id: 'upgrades',
+            id: 'upgrade',
             name: 'Upgrades',
             description: 'Permanent upgrades that enhance your abilities',
             icon: '⚡',
@@ -33,7 +33,7 @@ export const shopConfig = {
             itemTypes: ['tool']
         },
         {
-            id: 'roles',
+            id: 'role',
             name: 'Roles',
             description: 'Special roles with unique perks',
             icon: '🎭',
@@ -43,7 +43,7 @@ export const shopConfig = {
     
     transaction: {
 cooldown: 1000,
-maxQuantity: 10,
+maxQuantity: 99,
 confirmTimeout: 30000,
         
         refundPolicy: {
