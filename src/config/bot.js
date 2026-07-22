@@ -25,7 +25,7 @@ export const botConfig = {
       {
         name: "God Town", // required by Discord API, not shown in the client
         state: "AntiGodHub On Top 🔥",     // this is what people actually see
-        type: 3,               // Custom
+        type: 4,               // Custom
       },
     ],
   },
@@ -52,7 +52,7 @@ export const botConfig = {
 
     // Command prefix for text-based commands (e.g., "!" for "!ping").
     // Supports both slash commands and prefix commands.
-    prefix: process.env.PREFIX || "!",
+    prefix: process.env.PREFIX || ".",
   },
 
   // =========================
@@ -141,7 +141,7 @@ export const botConfig = {
     },
     footer: {
       // Default footer text used in bot embeds.
-      text: "Titan Bot",
+      text: "AntiGodHub Bot",
       // Footer icon URL (null = no icon).
       icon: null,
     },
@@ -172,25 +172,25 @@ export const botConfig = {
     startingBalance: 0,
 
     // Maximum bank amount before upgrades (if upgrades are used).
-    baseBankCapacity: 100000,
+    baseBankCapacity: 100000000,
 
     // Daily reward amount.
-    dailyAmount: 100,
+    dailyAmount: 1000,
 
     // Work command random payout range.
-    workMin: 10,
-    workMax: 100,
+    workMin: 100,
+    workMax: 10000,
 
     // Beg command random payout range.
-    begMin: 5,
-    begMax: 50,
+    begMin: 100,
+    begMax: 1000,
 
     // Command cooldowns (milliseconds).
     cooldowns: {
       daily: 24 * 60 * 60 * 1000,
-      work: 60 * 60 * 1000,
-      crime: 2 * 60 * 60 * 1000,
-      rob: 4 * 60 * 60 * 1000,
+      work: 15,
+      crime: 60,
+      rob: 2 * 60 * 60 * 1000,
     },
 
     // Chance to succeed when robbing (0.4 = 40%).
