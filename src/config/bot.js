@@ -61,9 +61,9 @@ export const botConfig = {
   applications: {
     // Default questions shown when someone fills out an application.
     defaultQuestions: [
-      { question: "What is your name?", required: true },
-      { question: "How old are you?", required: true },
-      { question: "Why do you want to join?", required: true },
+      { question: "Siapa nama mu?", required: true },
+      { question: "Berapa umur mu?", required: true },
+      { question: "Kenapa kamu ingin bergabung?", required: true },
     ],
 
     // Embed colors by application status.
@@ -161,9 +161,9 @@ export const botConfig = {
   economy: {
     currency: {
       // Currency display name.
-      name: "coins",
+      name: "cash",
       // Plural display name.
-      namePlural: "coins",
+      namePlural: "cash",
       // Currency symbol shown in balances.
       symbol: "$",
     },
@@ -189,8 +189,8 @@ export const botConfig = {
     cooldowns: {
       daily: 24 * 60 * 60 * 1000,
       work: 15 * 1000,
-      crime: 60 * 1000,
-      rob: 2 * 60 * 60 * 1000,
+      crime: 30 * 60 * 1000,
+      rob: 60 * 60 * 1000,
     },
 
     // Chance to succeed when robbing (0.4 = 40%).
@@ -224,27 +224,27 @@ export const botConfig = {
       none: {
         emoji: "⚪",
         color: "#95A5A6",
-        label: "None",
+        label: "Tidak Ada",
       },
       low: {
         emoji: "🟢",
         color: "#2ECC71",
-        label: "Low",
+        label: "Rendah",
       },
       medium: {
         emoji: "🟡",
         color: "#F1C40F",
-        label: "Medium",
+        label: "Sedang",
       },
       high: {
         emoji: "🔴",
         color: "#E74C3C",
-        label: "High",
+        label: "Tinggi",
       },
       urgent: {
         emoji: "🚨",
         color: "#E91E63",
-        label: "Urgent",
+        label: "Mendesak",
       },
     },
 
@@ -302,10 +302,10 @@ export const botConfig = {
   // =========================
   verification: {
     // Message shown when posting the verification panel.
-    defaultMessage: "Click the button below to verify yourself and gain access to the server!",
+    defaultMessage: "Klik tombol di bawah untuk memverifikasi diri mu dan dapatkan akses ke server!",
 
     // Text on the verification button.
-    defaultButtonText: "Verify",
+    defaultButtonText: "Verifikasi",
 
     // Automatic verification behavior.
     autoVerify: {
@@ -332,9 +332,9 @@ export const botConfig = {
 
       // Human-readable descriptions for each criteria mode.
       criteria: {
-        account_age: "Account must be older than specified days",
-        server_size: "All users if server has less than 1000 members",
-        none: "All users immediately"
+        account_age: "Akun harus lebih tua dari hari yang ditentukan",
+        server_size: "Semua pengguna jika server memiliki kurang dari 1000 anggota",
+        none: "Semua pengguna segera"
       }
     },
 
@@ -372,11 +372,11 @@ export const botConfig = {
     // Welcome template posted when a user joins.
     // Placeholders: {user}, {server}, {memberCount}
     defaultWelcomeMessage:
-      "Welcome {user} to {server}! We now have {memberCount} members!",
+      "Selamat datang {user} ke {server}! Kami sekarang memiliki {memberCount} anggota!",
     // Goodbye template posted when a user leaves.
     // Placeholders: {user}, {memberCount}
     defaultGoodbyeMessage:
-      "{user} has left the server. We now have {memberCount} members.",
+      "{user} telah meninggalkan server. Kami sekarang memiliki {memberCount} anggota.",
     // Channel ID for welcome messages.
     defaultWelcomeChannel: null,
     // Channel ID for goodbye messages.
@@ -404,26 +404,26 @@ export const botConfig = {
     },
     messages: {
       // Default response messages for counter actions.
-      created: "✅ Created counter **{name}**",
-      deleted: "🗑️ Deleted counter **{name}**",
-      updated: "🔄 Updated counter **{name}**",
+      created: "✅ Counter **{name}** dibuat",
+      deleted: "🗑️ Counter **{name}** dihapus",
+      updated: "🔄 Counter **{name}** diperbarui",
     },
     types: {
       // Built-in counter types and how each count is calculated.
       members: {
-        name: "👥 Members",
-        description: "Total members in the server",
+        name: "👥 Anggota",
+        description: "Total anggota di server",
         getCount: (guild) => guild.memberCount.toString(),
       },
       bots: {
-        name: "🤖 Bots",
-        description: "Total bot accounts in the server",
+        name: "🤖 Bot",
+        description: "Total akun bot di server",
         getCount: (guild) =>
           guild.members.cache.filter((m) => m.user.bot).size.toString(),
       },
       members_only: {
-        name: "👤 Humans",
-        description: "Total human members (non-bots)",
+        name: "👤 Manusia",
+        description: "Total anggota manusia (bukan bot)",
         getCount: (guild) =>
           guild.members.cache.filter((m) => !m.user.bot).size.toString(),
       },
@@ -434,13 +434,13 @@ export const botConfig = {
   // GENERIC BOT MESSAGES
   // =========================
   messages: {
-    noPermission: "You do not have permission to use this command.",
-    cooldownActive: "Please wait {time} before using this command again.",
-    errorOccurred: "An error occurred while executing this command.",
+    noPermission: "Kamu tidak memiliki izin untuk menggunakan perintah ini.",
+    cooldownActive: "Silakan tunggu {time} sebelum menggunakan perintah ini lagi.",
+    errorOccurred: "Terjadi kesalahan saat menjalankan perintah ini.",
     missingPermissions:
-      "I am missing required permissions to perform this action.",
-    commandDisabled: "This command has been disabled.",
-    maintenanceMode: "The bot is currently in maintenance mode.",
+      "Saya kehilangan izin yang diperlukan untuk melakukan tindakan ini.",
+    commandDisabled: "Perintah ini telah dinonaktifkan.",
+    maintenanceMode: "Bot sedang dalam mode pemeliharaan.",
   },
 
   // =========================
@@ -481,21 +481,21 @@ export function validateConfig(config) {
   const errors = [];
 
   if (process.env.NODE_ENV !== 'production') {
-    logger.debug('Environment variables check:');
-    logger.debug('DISCORD_TOKEN exists:', !!process.env.DISCORD_TOKEN);
-    logger.debug('TOKEN exists:', !!process.env.TOKEN);
-    logger.debug('CLIENT_ID exists:', !!process.env.CLIENT_ID);
-    logger.debug('GUILD_ID exists:', !!process.env.GUILD_ID);
-    logger.debug('POSTGRES_HOST exists:', !!process.env.POSTGRES_HOST);
+    logger.debug('Pemeriksaan variabel lingkungan:');
+    logger.debug('DISCORD_TOKEN ada:', !!process.env.DISCORD_TOKEN);
+    logger.debug('TOKEN ada:', !!process.env.TOKEN);
+    logger.debug('CLIENT_ID ada:', !!process.env.CLIENT_ID);
+    logger.debug('GUILD_ID ada:', !!process.env.GUILD_ID);
+    logger.debug('POSTGRES_HOST ada:', !!process.env.POSTGRES_HOST);
     logger.debug('NODE_ENV:', process.env.NODE_ENV);
   }
 
   if (!process.env.DISCORD_TOKEN && !process.env.TOKEN) {
-    errors.push("Bot token is required (DISCORD_TOKEN or TOKEN environment variable)");
+    errors.push("Token bot diperlukan (variabel lingkungan DISCORD_TOKEN atau TOKEN)");
   }
 
   if (!process.env.CLIENT_ID) {
-    errors.push("Client ID is required (CLIENT_ID environment variable)");
+    errors.push("Client ID diperlukan (variabel lingkungan CLIENT_ID)");
   }
 
   if (process.env.NODE_ENV === 'production') {
@@ -505,13 +505,13 @@ export function validateConfig(config) {
 
     if (!hasConnectionUrl) {
       if (!process.env.POSTGRES_HOST) {
-        errors.push("PostgreSQL connection is required in production (set DATABASE_URL/POSTGRES_URL, or POSTGRES_HOST)");
+        errors.push("Koneksi PostgreSQL diperlukan dalam produksi (atur DATABASE_URL/POSTGRES_URL, atau POSTGRES_HOST)");
       }
       if (!process.env.POSTGRES_USER) {
-        errors.push("PostgreSQL user is required in production (set DATABASE_URL/POSTGRES_URL, or POSTGRES_USER)");
+        errors.push("Pengguna PostgreSQL diperlukan dalam produksi (atur DATABASE_URL/POSTGRES_URL, atau POSTGRES_USER)");
       }
       if (!process.env.POSTGRES_PASSWORD) {
-        errors.push("PostgreSQL password is required in production (set DATABASE_URL/POSTGRES_URL, or POSTGRES_PASSWORD)");
+        errors.push("Kata sandi PostgreSQL diperlukan dalam produksi (atur DATABASE_URL/POSTGRES_URL, atau POSTGRES_PASSWORD)");
       }
     }
   }
@@ -521,7 +521,7 @@ export function validateConfig(config) {
 
 const configErrors = validateConfig(botConfig);
 if (configErrors.length > 0) {
-  logger.error("Bot configuration errors:", configErrors.join("\n"));
+  logger.error("Kesalahan konfigurasi bot:", configErrors.join("\n"));
   if (process.env.NODE_ENV === "production") {
     process.exit(1);
   }
