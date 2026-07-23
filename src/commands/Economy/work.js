@@ -11,22 +11,22 @@ const MIN_WORK_AMOUNT = botConfig.economy?.workMin ?? 10;
 const MAX_WORK_AMOUNT = botConfig.economy?.workMax ?? 100;
 const LAPTOP_MULTIPLIER = 1.5;
 const WORK_JOBS = [
-    "Software Developer",
+    "Pengembang Perangkat Lunak",
     "Barista",
-    "Janitor",
+    "Tukang Kebersihan",
     "YouTuber",
-    "Discord Bot Developer",
-    "Cashier",
-    "Pizza Delivery Driver",
-    "Librarian",
-    "Gardener",
-    "Data Analyst",
+    "Pengembang Bot Discord",
+    "Kasir",
+    "Pengantar Pizza",
+    "Pustakawan",
+    "Tukang Kebun",
+    "Analis Data",
 ];
 
 export default {
     data: new SlashCommandBuilder()
         .setName('work')
-        .setDescription('Work to earn some money'),
+        .setDescription('Bekerja untuk mendapatkan uang'),
 
     execute: withErrorHandling(async (interaction, config, client) => {
         const deferred = await InteractionHelper.safeDefer(interaction);
@@ -40,14 +40,14 @@ export default {
 
             if (!userData) {
                 throw createError(
-                    "Failed to load economy data for work",
+                    "Gagal memuat data ekonomi untuk pekerjaan",
                     ErrorTypes.DATABASE,
-                    "Failed to load your economy data. Please try again later.",
+                    "Gagal memuat data ekonomi Anda. Silakan coba lagi nanti.",
                     { userId, guildId }
                 );
             }
 
-            logger.debug(`[ECONOMY] Work command started for ${userId}`, { userId, guildId });
+            logger.debug(`[ECONOMY] Perintah kerja dimulai untuk ${userId}`, { userId, guildId });
 
             const lastWork = userData.lastWork || 0;
             const inventory = userData.inventory || {};
@@ -64,9 +64,9 @@ export default {
                 } else {
                     const remaining = lastWork + WORK_COOLDOWN - now;
                     throw createError(
-                        "Work cooldown active",
+                        "Cooldown pekerjaan aktif",
                         ErrorTypes.RATE_LIMIT,
-                        `You're working too fast! Wait **${Math.floor(remaining / 3600000)}h ${Math.floor((remaining % 3600000) / 60000)}m** before working again.`,
+                        `Anda bekerja terlalu cepat! Tunggu **${Math.floor(remaining / 3600000)}j ${Math.floor((remaining % 3600000) / 60000)}m** sebelum bekerja lagi.`,
                         { timeRemaining: remaining, cooldownType: 'work' }
                     );
                 }
@@ -78,43 +78,43 @@ export default {
             let multiplierMessage = "";
             if (hasLaptop > 0) {
                 earned = Math.floor(earned * LAPTOP_MULTIPLIER);
-                multiplierMessage = "\n💻 **Laptop Bonus:** +50% earnings!";
+                multiplierMessage = "\n💻 **Bonus Laptop:** +50% penghasilan!";
             }
 
-            userData.wallet = (userData.wallet || 0) + earned;
+            userData.cash = (userData.cash || 0) + earned;
             userData.lastWork = now;
 
             await setEconomyData(client, guildId, userId, userData);
 
-            logger.info(`[ECONOMY_TRANSACTION] Work completed`, {
+            logger.info(`[ECONOMY_TRANSACTION] Pekerjaan selesai`, {
                 userId,
                 guildId,
                 amount: earned,
                 job,
                 usedConsumable,
                 hasLaptop: hasLaptop > 0,
-                newWallet: userData.wallet,
+                newCash: userData.cash,
                 timestamp: new Date().toISOString()
             });
 
             const embed = successEmbed(
-                "💼 Work Complete!",
-                `You worked as a **${job}** and earned **$${earned.toLocaleString()}**!${multiplierMessage}`
+                "💼 Pekerjaan Selesai!",
+                `Anda bekerja sebagai **${job}** dan mendapatkan **Rp${earned.toLocaleString('id-ID')}**!${multiplierMessage}`
             )
                 .addFields(
                     {
-                        name: "New Balance",
-                        value: `$${userData.wallet.toLocaleString()}`,
+                        name: "Saldo Baru",
+                        value: `Rp${userData.cash.toLocaleString('id-ID')}`,
                         inline: true,
                     },
                     {
-                        name: "Next Work",
+                        name: "Pekerjaan Berikutnya",
                         value: `<t:${Math.floor((now + WORK_COOLDOWN) / 1000)}:R>`,
                         inline: true,
                     }
                 )
                 .setFooter({
-                    text: `Requested by ${interaction.user.tag}`,
+                    text: `Diminta oleh ${interaction.user.tag}`,
                     iconURL: interaction.user.displayAvatarURL(),
                 });
 
