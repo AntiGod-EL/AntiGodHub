@@ -10,12 +10,12 @@ services:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - CLIENT_ID=${CLIENT_ID}
       - GUILD_ID=${GUILD_ID}
-      - DATABASE_URL=postgres://${POSTGRES_USER:-titanbot}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-titanbot}
-      - POSTGRES_URL=postgres://${POSTGRES_USER:-titanbot}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-titanbot}
+      - DATABASE_URL=postgres://${POSTGRES_USER:-AntiGodHub}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-AntiGodHub}
+      - POSTGRES_URL=postgres://${POSTGRES_USER:-AntiGodHub}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-AntiGodHub}
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
-      - POSTGRES_DB=${POSTGRES_DB:-titanbot}
-      - POSTGRES_USER=${POSTGRES_USER:-titanbot}
+      - POSTGRES_DB=${POSTGRES_DB:-AntiGodHub}
+      - POSTGRES_USER=${POSTGRES_USER:-AntiGodHub}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
       - POSTGRES_SSL=false
       - AUTO_MIGRATE=true
@@ -52,12 +52,12 @@ services:
 
   db:
     image: postgres:15-alpine
-    container_name: titanbot-db
+    container_name: AntiGodHub-db
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=${POSTGRES_USER:-titanbot}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
-      - POSTGRES_DB=${POSTGRES_DB:-titanbot}
+      - POSTGRES_USER=${POSTGRES_USER:-AntiGodHub}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-AntiGodHub}
+      - POSTGRES_DB=${POSTGRES_DB:-AntiGodHub}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
