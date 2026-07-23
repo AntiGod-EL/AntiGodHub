@@ -16,9 +16,9 @@ const WORK_MIN = ECONOMY_CONFIG.workMin || 10;
 const WORK_MAX = ECONOMY_CONFIG.workMax || 100;
 const COOLDOWNS = ECONOMY_CONFIG.cooldowns || {
 daily: 24 * 60 * 60 * 1000,
-work: 60 * 60 * 1000,
-crime: 2 * 60 * 60 * 1000,
-rob: 4 * 60 * 60 * 1000,
+work: 15 * 1000,
+crime: 30 * 60 * 1000,
+rob: 60 * 60 * 1000,
 };
 
 export function getEconomyKey(guildId, userId) {
@@ -26,7 +26,7 @@ export function getEconomyKey(guildId, userId) {
     const validUserId = validateDiscordId(userId, 'userId');
     
     if (!validGuildId || !validUserId) {
-        throw new Error('Invalid guild ID or user ID');
+        throw new Error('ID Guild atau ID pengguna tidak valid');
     }
     
     return getEconomyStorageKey(validGuildId, validUserId);
@@ -52,26 +52,26 @@ export function getMaxBankCapacity(userData) {
 }
 
 export function formatCurrency(amount) {
-    const currencyName = ECONOMY_CONFIG.currency?.name || 'coins';
+    const currencyName = ECONOMY_CONFIG.currency?.name || 'cash';
     return `${amount.toLocaleString()} ${currencyName}`;
 }
 
 export async function getEconomyData(client, guildId, userId) {
     try {
         if (!client.db || typeof client.db.get !== 'function') {
-            throw new Error('Database not available');
+            throw new Error('Database tidak tersedia');
         }
 
         const key = getEconomyKey(guildId, userId);
         const data = await client.db.get(key, {});
         const defaults = {
             ...DEFAULT_ECONOMY_DATA,
-            wallet: ECONOMY_CONFIG.startingBalance ?? DEFAULT_ECONOMY_DATA.wallet,
+            cash: ECONOMY_CONFIG.startingBalance ?? DEFAULT_ECONOMY_DATA.cash,
         };
         
         return normalizeEconomyData(data, defaults);
     } catch (error) {
-        logger.error(`Error getting economy data for user ${userId}`, error);
+        logger.error(`Kesalahan mendapatkan data ekonomi untuk pengguna ${userId}`, error);
         return normalizeEconomyData({}, DEFAULT_ECONOMY_DATA);
     }
 }
@@ -79,7 +79,7 @@ export async function getEconomyData(client, guildId, userId) {
 export async function setEconomyData(client, guildId, userId, data) {
     try {
         if (!client.db || typeof client.db.set !== 'function') {
-            throw new Error('Database not available');
+            throw new Error('Database tidak tersedia');
         }
 
         const key = getEconomyKey(guildId, userId);
@@ -87,7 +87,7 @@ export async function setEconomyData(client, guildId, userId, data) {
         await client.db.set(key, normalized);
         return true;
     } catch (error) {
-        logger.error(`Error saving economy data for user ${userId}`, error);
+        logger.error(`Kesalahan menyimpan data ekonomi untuk pengguna ${userId}`, error);
         return false;
     }
 }
@@ -95,8 +95,8 @@ export async function setEconomyData(client, guildId, userId, data) {
 export async function updateBalance(client, guildId, userId, options = {}) {
     const data = await getEconomyData(client, guildId, userId);
     
-    if (options.wallet !== undefined) {
-        data.wallet = Math.max(0, (data.wallet || 0) + options.wallet);
+    if (options.cash !== undefined) {
+        data.cash = Math.max(0, (data.cash || 0) + options.cash);
     }
     
     if (options.bank !== undefined) {
@@ -133,32 +133,32 @@ export function checkCooldown(userData, action) {
 }
 
 function formatCooldown(ms) {
-    if (ms < 1000) return 'now';
+    if (ms < 1000) return 'sekarang';
     
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
     
-    if (days > 0) return `${days}d ${hours % 24}h`;
-    if (hours > 0) return `${hours}h ${minutes % 60}m`;
-    if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
-    return `${seconds}s`;
+    if (days > 0) return `${days}h ${hours % 24}j`;
+    if (hours > 0) return `${hours}j ${minutes % 60}m`;
+    if (minutes > 0) return `${minutes}m ${seconds % 60}d`;
+    return `${seconds}d`;
 }
 
 export function getWorkReward() {
     const amount = Math.floor(Math.random() * (WORK_MAX - WORK_MIN + 1)) + WORK_MIN;
     const jobs = [
-        'worked at a fast food restaurant',
-        'worked as a programmer',
-        'worked as a construction worker',
-        'worked as a doctor',
-        'worked as a streamer',
-        'worked as a YouTuber',
-        'worked as a teacher',
-        'worked as a cashier',
-        'worked as a delivery driver',
-        'worked as a freelancer'
+        'bekerja di restoran cepat saji',
+        'bekerja sebagai programmer',
+        'bekerja sebagai pekerja konstruksi',
+        'bekerja sebagai dokter',
+        'bekerja sebagai streamer',
+        'bekerja sebagai YouTuber',
+        'bekerja sebagai guru',
+        'bekerja sebagai kasir',
+        'bekerja sebagai kurir pengiriman',
+        'bekerja sebagai freelancer'
     ];
     
     const job = jobs[Math.floor(Math.random() * jobs.length)];
@@ -166,7 +166,7 @@ export function getWorkReward() {
     return {
         amount,
         job,
-        message: `You ${job} and earned ${formatCurrency(amount)}!`
+        message: `Kamu ${job} dan mendapatkan ${formatCurrency(amount)}!`
     };
 }
 
@@ -175,32 +175,32 @@ export function getCrimeOutcome() {
         {
             success: true,
             amount: Math.floor(Math.random() * 200) + 50,
-            message: 'You successfully robbed a bank and got away with {amount}!' 
+            message: 'Kamu berhasil merampok bank dan kabur dengan {amount}!' 
         },
         {
             success: true,
             amount: Math.floor(Math.random() * 100) + 20,
-            message: 'You pickpocketed someone and stole {amount}!' 
+            message: 'Kamu mencuri dompet seseorang dan mendapatkan {amount}!' 
         },
         {
             success: true,
             amount: Math.floor(Math.random() * 150) + 30,
-            message: 'You hacked into a bank account and transferred {amount} to yourself!' 
+            message: 'Kamu meretas rekening bank dan mentransfer {amount} untuk dirimu sendiri!' 
         },
         {
             success: false,
             fine: Math.floor(Math.random() * 100) + 50,
-            message: 'You got caught and had to pay a fine of {fine}!' 
+            message: 'Kamu tertangkap dan harus membayar denda {fine}!' 
         },
         {
             success: false,
             fine: Math.floor(Math.random() * 150) + 50,
-            message: 'The police caught you! You paid {fine} to get out of jail.' 
+            message: 'Polisi menangkapmu! Kamu membayar {fine} untuk keluar dari penjara.' 
         },
         {
             success: false,
             fine: 0,
-            message: 'Your attempt failed, but you managed to escape!' 
+            message: 'Usahamu gagal, tapi kamu berhasil melarikan diri!' 
         }
     ];
     
@@ -212,7 +212,7 @@ export function getRobOutcome(targetBalance) {
         return {
             success: false,
             amount: 0,
-            message: 'The target has no money to steal!'
+            message: 'Target tidak memiliki uang untuk dicuri!'
         };
     }
     
@@ -227,7 +227,7 @@ Math.floor(Math.random() * (targetBalance * 0.3)) + 1,
         return {
             success: true,
             amount,
-            message: `You successfully robbed them and got away with {amount}!`
+            message: `Kamu berhasil merampok mereka dan kabur dengan {amount}!`
         };
     } else {
         const fine = Math.floor(Math.random() * 200) + 100;
@@ -236,7 +236,7 @@ Math.floor(Math.random() * (targetBalance * 0.3)) + 1,
             success: false,
             amount: 0,
             fine,
-            message: `You got caught! You had to pay a fine of {fine}.`
+            message: `Kamu tertangkap! Kamu harus membayar denda {fine}.`
         };
     }
 }
@@ -245,22 +245,22 @@ export function formatShopItem(item, index) {
     return `**${index + 1}.** ${item.emoji} **${item.name}** - ${formatCurrency(item.price)}\n${item.description}\n`;
 }
 
-export const addMoney = wrapServiceBoundary(async function addMoney(client, guildId, userId, amount, type = 'wallet') {
+export const addMoney = wrapServiceBoundary(async function addMoney(client, guildId, userId, amount, type = 'cash') {
     const validAmount = validateNumber(amount, 'amount');
     if (validAmount === null || validAmount <= 0) {
         throw createError(
-            'Invalid amount',
+            'Jumlah tidak valid',
             ErrorTypes.VALIDATION,
-            'Amount must be a positive number.',
+            'Jumlah harus berupa angka positif.',
             { guildId, userId, amount, operation: 'addMoney' }
         );
     }
 
-    if (type !== 'wallet' && type !== 'bank') {
+    if (type !== 'cash' && type !== 'bank') {
         throw createError(
-            'Invalid money type',
+            'Jenis uang tidak valid',
             ErrorTypes.VALIDATION,
-            'Type must be "wallet" or "bank".',
+            'Tipe harus "cash" atau "bank".',
             { guildId, userId, type, operation: 'addMoney' }
         );
     }
@@ -271,45 +271,45 @@ export const addMoney = wrapServiceBoundary(async function addMoney(client, guil
         const maxBank = getMaxBankCapacity(userData);
         if ((userData.bank || 0) + validAmount > maxBank) {
             throw createError(
-                'Bank capacity exceeded',
+                'Kapasitas bank terlampaui',
                 ErrorTypes.VALIDATION,
-                `Bank capacity exceeded. Current: ${userData.bank || 0}, Max: ${maxBank}.`,
+                `Kapasitas bank terlampaui. Saat ini: ${userData.bank || 0}, Maksimal: ${maxBank}.`,
                 { guildId, userId, current: userData.bank || 0, max: maxBank, operation: 'addMoney' }
             );
         }
         userData.bank = (userData.bank || 0) + validAmount;
     } else {
-        userData.wallet = (userData.wallet || 0) + validAmount;
+        userData.cash = (userData.cash || 0) + validAmount;
     }
 
     await setEconomyData(client, guildId, userId, userData);
 
     return {
-        newBalance: type === 'bank' ? userData.bank : userData.wallet,
+        newBalance: type === 'bank' ? userData.bank : userData.cash,
         ...(type === 'bank' ? { maxBank: getMaxBankCapacity(userData) } : {}),
     };
 }, {
     service: 'economy',
     operation: 'addMoney',
-    userMessage: 'Failed to add money. Please try again.',
+    userMessage: 'Gagal menambahkan uang. Silakan coba lagi.',
 });
 
-export const removeMoney = wrapServiceBoundary(async function removeMoney(client, guildId, userId, amount, type = 'wallet') {
+export const removeMoney = wrapServiceBoundary(async function removeMoney(client, guildId, userId, amount, type = 'cash') {
     const validAmount = validateNumber(amount, 'amount');
     if (validAmount === null || validAmount <= 0) {
         throw createError(
-            'Invalid amount',
+            'Jumlah tidak valid',
             ErrorTypes.VALIDATION,
-            'Amount must be a positive number.',
+            'Jumlah harus berupa angka positif.',
             { guildId, userId, amount, operation: 'removeMoney' }
         );
     }
 
-    if (type !== 'wallet' && type !== 'bank') {
+    if (type !== 'cash' && type !== 'bank') {
         throw createError(
-            'Invalid money type',
+            'Jenis uang tidak valid',
             ErrorTypes.VALIDATION,
-            'Type must be "wallet" or "bank".',
+            'Tipe harus "cash" atau "bank".',
             { guildId, userId, type, operation: 'removeMoney' }
         );
     }
@@ -319,52 +319,52 @@ export const removeMoney = wrapServiceBoundary(async function removeMoney(client
     if (type === 'bank') {
         if ((userData.bank || 0) < validAmount) {
             throw createError(
-                'Insufficient bank funds',
+                'Dana bank tidak cukup',
                 ErrorTypes.VALIDATION,
-                `Insufficient funds in bank. You have ${userData.bank || 0}, need ${validAmount}.`,
+                `Dana bank tidak cukup. Kamu punya ${userData.bank || 0}, butuh ${validAmount}.`,
                 { guildId, userId, current: userData.bank || 0, required: validAmount, operation: 'removeMoney' }
             );
         }
         userData.bank = (userData.bank || 0) - validAmount;
     } else {
-        if ((userData.wallet || 0) < validAmount) {
+        if ((userData.cash || 0) < validAmount) {
             throw createError(
-                'Insufficient wallet funds',
+                'Dana cash tidak cukup',
                 ErrorTypes.VALIDATION,
-                `Insufficient funds in wallet. You have ${userData.wallet || 0}, need ${validAmount}.`,
-                { guildId, userId, current: userData.wallet || 0, required: validAmount, operation: 'removeMoney' }
+                `Dana cash tidak cukup. Kamu punya ${userData.cash || 0}, butuh ${validAmount}.`,
+                { guildId, userId, current: userData.cash || 0, required: validAmount, operation: 'removeMoney' }
             );
         }
-        userData.wallet = (userData.wallet || 0) - validAmount;
+        userData.cash = (userData.cash || 0) - validAmount;
     }
 
     await setEconomyData(client, guildId, userId, userData);
 
     return {
-        newBalance: type === 'bank' ? userData.bank : userData.wallet,
+        newBalance: type === 'bank' ? userData.bank : userData.cash,
     };
 }, {
     service: 'economy',
     operation: 'removeMoney',
-    userMessage: 'Failed to remove money. Please try again.',
+    userMessage: 'Gagal menghapus uang. Silakan coba lagi.',
 });
 
 export function getShopInventory() {
     return [
         {
             id: 'fishing_rod',
-            name: 'Fishing Rod',
+            name: 'Pancing',
             emoji: '🎣',
             price: 500,
-            description: 'Catch fish to sell for profit!',
+            description: 'Menangkap ikan untuk dijual dengan menguntungkan!',
             type: 'tool'
         },
         {
             id: 'hunting_rifle',
-            name: 'Hunting Rifle',
+            name: 'Senapan Berburu',
             emoji: '🔫',
             price: 1000,
-            description: 'Hunt animals for meat and fur!',
+            description: 'Berburu hewan untuk daging dan bulu!',
             type: 'tool'
         },
         {
@@ -372,26 +372,26 @@ export function getShopInventory() {
             name: 'Laptop',
             emoji: '💻',
             price: 2000,
-            description: 'Work as a programmer for higher pay!',
+            description: 'Bekerja sebagai programmer dengan gaji lebih tinggi!',
             type: 'tool',
             workMultiplier: 1.5
         },
         {
             id: 'bank_loan',
-            name: 'Bank Loan',
+            name: 'Pinjaman Bank',
             emoji: '🏦',
             price: 5000,
-            description: 'Increases your bank capacity by 50,000!',
+            description: 'Meningkatkan kapasitas bank kamu sebesar 50.000!',
             type: 'upgrade',
             effect: 'bank_capacity',
             value: 50000
         },
         {
             id: 'lottery_ticket',
-            name: 'Lottery Ticket',
+            name: 'Tiket Lotere',
             emoji: '🎫',
             price: 100,
-            description: 'A chance to win big!',
+            description: 'Kesempatan untuk menang besar!',
             type: 'consumable',
             use: 'gamble'
         }
