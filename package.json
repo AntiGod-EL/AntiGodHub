@@ -1,7 +1,7 @@
 {
-  "name": "titanbot",
+  "name": "AntiGodHub",
   "version": "2.1.0",
-  "description": "Modular Ultimate Community Bot by Touchpoint Support",
+  "description": "Protect AntiGodHub",
   "main": "src/app.js",
   "type": "module",
   "scripts": {
