@@ -7,11 +7,11 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
     data: new SlashCommandBuilder()
         .setName('withdraw')
-        .setDescription('Withdraw money from your bank to your wallet')
+        .setDescription('Tarik uang dari bank Anda ke kas Anda')
         .addIntegerOption(option =>
             option
                 .setName('amount')
-                .setDescription('Amount to withdraw')
+                .setDescription('Jumlah yang akan ditarik')
                 .setRequired(true)
                 .setMinValue(1)
         ),
@@ -27,9 +27,9 @@ export default {
             
             if (!userData) {
                 throw createError(
-                    "Failed to load economy data",
+                    "Gagal memuat data ekonomi",
                     ErrorTypes.DATABASE,
-                    "Failed to load your economy data. Please try again later.",
+                    "Gagal memuat data ekonomi Anda. Silakan coba lagi nanti.",
                     { userId, guildId }
                 );
             }
@@ -38,9 +38,9 @@ export default {
 
             if (withdrawAmount <= 0) {
                 throw createError(
-                    "Invalid withdrawal amount",
+                    "Jumlah penarikan tidak valid",
                     ErrorTypes.VALIDATION,
-                    "You must withdraw a positive amount.",
+                    "Anda harus menarik jumlah yang positif.",
                     { amount: withdrawAmount, userId }
                 );
             }
@@ -51,31 +51,31 @@ export default {
 
             if (withdrawAmount === 0) {
                 throw createError(
-                    "Empty bank account",
+                    "Rekening bank kosong",
                     ErrorTypes.VALIDATION,
-                    "Your bank account is empty.",
+                    "Rekening bank Anda kosong.",
                     { userId, bankBalance: userData.bank }
                 );
             }
 
-            userData.wallet += withdrawAmount;
+            userData.cash += withdrawAmount;
             userData.bank -= withdrawAmount;
 
             await setEconomyData(client, guildId, userId, userData);
 
             const embed = successEmbed(
-                'Withdrawal Successful',
-                `You successfully withdrew **$${withdrawAmount.toLocaleString()}** from your bank.`
+                '💰 Penarikan Berhasil',
+                `Anda berhasil menarik **Rp${withdrawAmount.toLocaleString('id-ID')}** dari bank Anda.`
             )
                 .addFields(
                     {
-                        name: "New Cash Balance",
-                        value: `$${userData.wallet.toLocaleString()}`,
+                        name: "Saldo Kas Baru",
+                        value: `Rp${userData.cash.toLocaleString('id-ID')}`,
                         inline: true,
                     },
                     {
-                        name: "New Bank Balance",
-                        value: `$${userData.bank.toLocaleString()}`,
+                        name: "Saldo Bank Baru",
+                        value: `Rp${userData.bank.toLocaleString('id-ID')}`,
                         inline: true,
                     },
                 );
