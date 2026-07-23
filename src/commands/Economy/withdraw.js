@@ -7,7 +7,7 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 export default {
     data: new SlashCommandBuilder()
         .setName('withdraw')
-        .setDescription('Tarik uang dari bank Anda ke kas Anda')
+        .setDescription('Tarik uang dari bank ke dompet')
         .addIntegerOption(option =>
             option
                 .setName('amount')
@@ -38,9 +38,9 @@ export default {
 
             if (withdrawAmount <= 0) {
                 throw createError(
-                    "Jumlah penarikan tidak valid",
+                    "Kalo Mau Narik Mikir Kids",
                     ErrorTypes.VALIDATION,
-                    "Anda harus menarik jumlah yang positif.",
+                    "Minimal Masukin Jumlah Penarikan Yang Wajar",
                     { amount: withdrawAmount, userId }
                 );
             }
@@ -51,9 +51,9 @@ export default {
 
             if (withdrawAmount === 0) {
                 throw createError(
-                    "Rekening bank kosong",
+                    "Gaada Duit Di Bank Lu 😹",
                     ErrorTypes.VALIDATION,
-                    "Rekening bank Anda kosong.",
+                    "Rekening Bank Kosong Buat Apa 😹.",
                     { userId, bankBalance: userData.bank }
                 );
             }
@@ -65,16 +65,16 @@ export default {
 
             const embed = successEmbed(
                 '💰 Penarikan Berhasil',
-                `Anda berhasil menarik **Rp${withdrawAmount.toLocaleString('id-ID')}** dari bank Anda.`
+                `berhasil menarik **Rp${withdrawAmount.toLocaleString('id-ID')}** dari bank Anda.`
             )
                 .addFields(
                     {
-                        name: "Saldo Kas Baru",
+                        name: "Saldo Dompet",
                         value: `Rp${userData.cash.toLocaleString('id-ID')}`,
                         inline: true,
                     },
                     {
-                        name: "Saldo Bank Baru",
+                        name: "Saldo Bank",
                         value: `Rp${userData.bank.toLocaleString('id-ID')}`,
                         inline: true,
                     },
