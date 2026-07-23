@@ -4,7 +4,7 @@ import { botConfig } from '../bot.js';
 const { currency } = botConfig.economy;
 
 export const shopConfig = {
-    name: 'AntiGodHub Shop',
+    name: 'Toko AntiGodHub',
     currency: currency.name,
     currencyName: currency.name,
     currencyNamePlural: currency.namePlural || `${currency.name}s`,
@@ -13,43 +13,43 @@ export const shopConfig = {
     categories: [
         {
             id: 'consumables',
-            name: 'Consumables',
-            description: 'One-time use items that provide temporary benefits',
+            name: 'Konsumsi',
+            description: 'Item sekali pakai yang memberikan manfaat sementara',
             icon: '🍯',
             itemTypes: ['consumable']
         },
         {
             id: 'upgrade',
-            name: 'Upgrades',
-            description: 'Permanent upgrades that enhance your abilities',
+            name: 'Peningkatan',
+            description: 'Peningkatan permanen yang meningkatkan kemampuan Anda',
             icon: '⚡',
             itemTypes: ['upgrade']
         },
         {
             id: 'tools',
-            name: 'Tools',
-            description: 'Equipment that helps you gather resources more efficiently',
+            name: 'Alat',
+            description: 'Peralatan yang membantu Anda mengumpulkan sumber daya dengan lebih efisien',
             icon: '⛏️',
             itemTypes: ['tool']
         },
         {
             id: 'role',
-            name: 'Roles',
-            description: 'Special roles with unique perks',
+            name: 'Peran',
+            description: 'Peran khusus dengan manfaat unik',
             icon: '🎭',
             itemTypes: ['role']
         }
     ],
     
     transaction: {
-cooldown: 1000,
-maxQuantity: 99,
-confirmTimeout: 30000,
+        cooldown: 1000,
+        maxQuantity: 99,
+        confirmTimeout: 30000,
         
         refundPolicy: {
             enabled: true,
-window: 300000,
-fee: 0.1
+            window: 300000,
+            fee: 0.1
         }
     },
     
@@ -60,19 +60,19 @@ fee: 0.1
         showAffordability: true,
         
         colors: {
-primary: '#5865F2',
-success: '#43B581',
-error: '#F04747',
-warning: '#FAA61A',
-info: '#00B0F4',
+            primary: '#5865F2',
+            success: '#43B581',
+            error: '#F04747',
+            warning: '#FAA61A',
+            info: '#00B0F4',
             
             rarity: {
-common: '#99AAB5',
-uncommon: '#2ECC71',
-rare: '#3498DB',
-epic: '#9B59B6',
-legendary: '#F1C40F',
-mythic: '#E74C3C'
+                common: '#99AAB5',
+                uncommon: '#2ECC71',
+                rare: '#3498DB',
+                epic: '#9B59B6',
+                legendary: '#F1C40F',
+                mythic: '#E74C3C'
             }
         },
         
@@ -95,18 +95,18 @@ mythic: '#E74C3C'
     events: {
         restock: {
             enabled: true,
-interval: 86400000,
-announcementChannel: null,
-            message: '🛒 **Shop Restocked!** New items are now available!'
+            interval: 86400000,
+            announcementChannel: null,
+            message: '🛒 **Toko Diisi Ulang!** Item baru tersedia sekarang!'
         },
         
         sales: {
             enabled: true,
             schedule: [
                 {
-day: 0,
-discount: 0.2,
-                    message: '🔥 **Weekend Sale!** 20% off all items!'
+                    day: 0,
+                    discount: 0.2,
+                    message: '🔥 **Penjualan Akhir Pekan!** Diskon 20% untuk semua item!'
                 },
             ]
         }
@@ -141,7 +141,7 @@ export function getCurrentPrice(itemId, { quantity = 1, userData = null } = {}) 
         }
         
         if (quantity >= 10) {
-discount += 0.1;
+            discount += 0.1;
         }
     }
     
@@ -155,8 +155,8 @@ export function getCategoryForItem(itemType) {
         cat.itemTypes.includes(itemType)
     ) || {
         id: 'other',
-        name: 'Other',
-        description: 'Miscellaneous items',
+        name: 'Lainnya',
+        description: 'Item lain-lain',
         icon: '📦'
     };
 }
