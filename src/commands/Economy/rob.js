@@ -13,11 +13,11 @@ const FINE_PERCENTAGE = 0.1;
 export default {
     data: new SlashCommandBuilder()
         .setName('rob')
-        .setDescription('Attempt to rob another user (very risky)')
+        .setDescription('Coba merampok pengguna lain (sangat berisiko)')
         .addUserOption(option =>
             option
                 .setName('user')
-                .setDescription('User to rob')
+                .setDescription('Pengguna yang akan dirampok')
                 .setRequired(true)
         ),
 
@@ -32,18 +32,18 @@ export default {
 
             if (robberId === victimUser.id) {
                 throw createError(
-                    "Cannot rob self",
+                    "Gila Mau Ngerampok Diri Sendiri",
                     ErrorTypes.VALIDATION,
-                    "You cannot rob yourself.",
+                    "Cari Target Dulu Oon",
                     { robberId, victimId: victimUser.id }
                 );
             }
             
             if (victimUser.bot) {
                 throw createError(
-                    "Cannot rob bot",
+                    "Makin Gila Mau Ngerampok Bot",
                     ErrorTypes.VALIDATION,
-                    "You cannot rob a bot.",
+                    "Cari Orang Oon Kalo Gabisa Mati Aja",
                     { victimId: victimUser.id, isBot: true }
                 );
             }
@@ -53,9 +53,9 @@ export default {
             
             if (!robberData || !victimData) {
                 throw createError(
-                    "Failed to load economy data",
+                    "Gaada Duit Miskin Dia",
                     ErrorTypes.DATABASE,
-                    "Failed to load economy data. Please try again later.",
+                    "Ganti Target",
                     { robberId: !!robberData, victimId: !!victimData, guildId }
                 );
             }
@@ -68,19 +68,19 @@ export default {
                 const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
 
                 throw createError(
-                    "Robbery cooldown active",
+                    "Sabar Nyet",
                     ErrorTypes.RATE_LIMIT,
-                    `You need to lay low. Wait **${hours}h ${minutes}m** before attempting another robbery.`,
+                    `Istirahat Dulu **${hours}j ${minutes}m** Sebelum Merampok Lagi.`,
                     { remaining, hours, minutes, cooldownType: 'rob' }
                 );
             }
 
-            if (victimData.wallet < 500) {
+            if (victimData.cash < 500) {
                 throw createError(
-                    "Victim too poor",
+                    "Gaada Duit Miskin Dia",
                     ErrorTypes.VALIDATION,
-                    `${victimUser.username} is too poor. They need at least $500 cash to be worth robbing.`,
-                    { victimWallet: victimData.wallet, required: 500 }
+                    `${victimUser.username} Terlalu Miskin, Rp500 Di Dompet Aja Gaada`,
+                    { victimCash: victimData.cash, required: 500 }
                 );
             }
 
@@ -93,8 +93,8 @@ export default {
                 return await InteractionHelper.safeEditReply(interaction, {
                     embeds: [
                         warningEmbed(
-                            'Robbery Blocked',
-                            `${victimUser.username} was prepared! Your attempt failed because they own a **Personal Safe**. You got away clean but didn't gain anything.`
+                            '🛡️ Perampokan Diblokir',
+                            `${victimUser.username} siap! Upaya Anda gagal karena mereka memiliki **Brankas Pribadi**. Anda berhasil kabur tetapi tidak mendapatkan apa pun.`
                         )
                     ],
                 });
@@ -104,28 +104,28 @@ export default {
             let resultEmbed;
 
             if (isSuccessful) {
-                const amountStolen = Math.floor(victimData.wallet * ROB_PERCENTAGE);
+                const amountStolen = Math.floor(victimData.cash * ROB_PERCENTAGE);
 
-                robberData.wallet = (robberData.wallet || 0) + amountStolen;
-                victimData.wallet = (victimData.wallet || 0) - amountStolen;
+                robberData.cash = (robberData.cash || 0) + amountStolen;
+                victimData.cash = (victimData.cash || 0) - amountStolen;
 
                 resultEmbed = successEmbed(
-                    'Robbery Successful',
-                    `You successfully stole **$${amountStolen.toLocaleString()}** from ${victimUser.username}!`
+                    '💰 Perampokan Berhasil',
+                    `Berhasil Mencuri **Rp${amountStolen.toLocaleString('id-ID')}** Dari ${victimUser.username}!`
                 );
             } else {
-                const fineAmount = Math.floor((robberData.wallet || 0) * FINE_PERCENTAGE);
+                const fineAmount = Math.floor((robberData.cash || 0) * FINE_PERCENTAGE);
 
-                if ((robberData.wallet || 0) < fineAmount) {
-                    robberData.wallet = 0;
+                if ((robberData.cash || 0) < fineAmount) {
+                    robberData.cash = 0;
                 } else {
-                    robberData.wallet = (robberData.wallet || 0) - fineAmount;
+                    robberData.cash = (robberData.cash || 0) - fineAmount;
                 }
 
                 resultEmbed = buildUserErrorEmbed(
                     'unknown',
-                    `You failed the robbery and were caught! You were fined **$${fineAmount.toLocaleString()}** of your own cash.`,
-                    { titleOverride: 'Robbery Failed' }
+                    `Bodoh Ketangkep Kan, Mana Disuruh Bayat Denda Lagi **Rp${fineAmount.toLocaleString('id-ID')}** Bangkrut Sudah.`,
+                    { titleOverride: '❌ Perampokan Gagal' }
                 );
             }
 
@@ -137,17 +137,17 @@ export default {
             resultEmbed
                 .addFields(
                     {
-                        name: `Your New Cash (${interaction.user.username})`,
-                        value: `$${robberData.wallet.toLocaleString()}`,
+                        name: `Cash Anda (${interaction.user.username})`,
+                        value: `Rp${robberData.cash.toLocaleString('id-ID')}`,
                         inline: true,
                     },
                     {
-                        name: `Victim's New Cash (${victimUser.username})`,
-                        value: `$${victimData.wallet.toLocaleString()}`,
+                        name: `Cash Korban (${victimUser.username})`,
+                        value: `Rp${victimData.cash.toLocaleString('id-ID')}`,
                         inline: true,
                     },
                 )
-                .setFooter({ text: `Next robbery available in ${Math.ceil(ROB_COOLDOWN / (60 * 60 * 1000))} hours.` });
+                .setFooter({ text: `Perampokan berikutnya tersedia dalam ${Math.ceil(ROB_COOLDOWN / (60 * 60 * 1000))} jam.` });
 
             await InteractionHelper.safeEditReply(interaction, { embeds: [resultEmbed] });
     }, { command: 'rob' })
