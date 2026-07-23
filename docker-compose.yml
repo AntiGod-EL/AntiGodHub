@@ -1,7 +1,7 @@
 services:
   bot:
     build: .
-    container_name: titanbot
+    container_name: AntiGodHub
     restart: unless-stopped
     env_file:
       - .env
@@ -35,20 +35,20 @@ services:
       retries: 3
       start_period: 40s
     networks:
-      - titan-network
+      - AntiGodHub-network
 
   lavalink:
     profiles:
       - local-lavalink
     image: ghcr.io/lavalink-devs/lavalink:4
-    container_name: titanbot-lavalink
+    container_name: AntiGodHub-lavalink
     restart: unless-stopped
     environment:
       - LAVALINK_PASSWORD=${LAVALINK_PASSWORD:-youshallnotpass}
     volumes:
       - ./lavalink/application.yml:/opt/Lavalink/application.yml
     networks:
-      - titan-network
+      - AntiGodHub-network
 
   db:
     image: postgres:15-alpine
@@ -66,10 +66,10 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - titan-network
+      - AntiGodHub-network
 
 networks:
-  titan-network:
+  AntiGodHub-network:
     driver: bridge
 
 volumes:
