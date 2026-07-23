@@ -6,21 +6,21 @@ import { logger } from '../../utils/logger.js';
 import { InteractionHelper } from '../../utils/interactionHelper.js';
 import { botConfig } from '../../config/bot.js';
 
-const WORK_COOLDOWN = botConfig.economy?.cooldowns?.work ?? 30 * 60 * 1000;
+const WORK_COOLDOWN = botConfig.economy?.cooldowns?.work ?? 15 * 1000;
 const MIN_WORK_AMOUNT = botConfig.economy?.workMin ?? 10;
 const MAX_WORK_AMOUNT = botConfig.economy?.workMax ?? 100;
 const LAPTOP_MULTIPLIER = 1.5;
 const WORK_JOBS = [
-    "Pengembang Perangkat Lunak",
-    "Barista",
+    "Lc Kabupaten",
+    "Tukang Bengkel",
     "Tukang Kebersihan",
     "YouTuber",
-    "Pengembang Bot Discord",
-    "Kasir",
-    "Pengantar Pizza",
-    "Pustakawan",
-    "Tukang Kebun",
-    "Analis Data",
+    "Tukang Paket",
+    "Manusia Silver",
+    "Pengantar Sabu",
+    "Pengedar Sabu",
+    "Dukun Palsu",
+    "Gojek",
 ];
 
 export default {
@@ -64,9 +64,9 @@ export default {
                 } else {
                     const remaining = lastWork + WORK_COOLDOWN - now;
                     throw createError(
-                        "Cooldown pekerjaan aktif",
+                        "Sabar Nyet",
                         ErrorTypes.RATE_LIMIT,
-                        `Anda bekerja terlalu cepat! Tunggu **${Math.floor(remaining / 3600000)}j ${Math.floor((remaining % 3600000) / 60000)}m** sebelum bekerja lagi.`,
+                        `Tunggu **${Math.floor(remaining / 3600000)}j ${Math.floor((remaining % 3600000) / 60000)}m** sebelum kerja lagi.`,
                         { timeRemaining: remaining, cooldownType: 'work' }
                     );
                 }
