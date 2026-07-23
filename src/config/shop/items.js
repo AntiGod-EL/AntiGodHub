@@ -1,9 +1,9 @@
 export const shopItems = [
     {
         id: 'extra_work',
-        name: 'Extra Work Shift',
+        name: 'Shift Kerja Ekstra',
         price: 5000,
-        description: 'Allows 1 extra use of the `/work` command.',
+        description: 'Memungkinkan 1 penggunaan tambahan dari perintah `/work`.',
         type: 'consumable',
         maxQuantity: 5,
 cooldown: 86400000,
@@ -15,9 +15,9 @@ cooldown: 86400000,
     },
     {
         id: 'bank_upgrade_1',
-        name: 'Bank Upgrade I',
+        name: 'Upgrade Bank I',
         price: 15000,
-        description: 'Increases bank capacity and allows more funds to be deposited.',
+        description: 'Meningkatkan kapasitas bank dan memungkinkan lebih banyak dana untuk disimpan.',
         type: 'upgrade',
         maxLevel: 5,
         effect: {
@@ -27,9 +27,9 @@ cooldown: 86400000,
     },
     {
         id: 'diamond_pickaxe',
-        name: 'Diamond Pickaxe',
+        name: 'Pickaxe Berlian',
         price: 50000,
-        description: 'Increases yield from `/mine`',
+        description: 'Meningkatkan hasil dari `/mine`',
         type: 'tool',
         durability: 100,
         effect: {
@@ -39,9 +39,9 @@ cooldown: 86400000,
     },
     {
         id: 'premium_role',
-        name: 'Premium Server Role',
+        name: 'Role Premium Server',
         price: 15000,
-        description: 'A special role granting a fancy color and a 10% daily bonus.',
+        description: 'Sebuah role khusus yang memberikan warna mewah dan bonus harian 10%.',
         type: 'role',
 roleId: null,
         effect: {
@@ -51,9 +51,9 @@ roleId: null,
     },
     {
         id: 'lucky_clover',
-        name: 'Lucky Clover',
+        name: 'Semanggi Beruntung',
         price: 10000,
-        description: 'Increases the chance of winning a higher payout on `/gamble` once.',
+        description: 'Meningkatkan peluang untuk memenangkan pembayaran yang lebih tinggi di `/gamble` sekali.',
         type: 'consumable',
         maxQuantity: 10,
         effect: {
@@ -64,9 +64,9 @@ roleId: null,
     },
     {
         id: 'fishing_rod',
-        name: '🎣 Fishing Rod',
+        name: '🎣 Pancing',
         price: 5000,
-        description: 'Used for fishing commands',
+        description: 'Digunakan untuk perintah memancing',
         type: 'tool',
         durability: 100,
         effect: {
@@ -78,7 +78,7 @@ roleId: null,
         id: 'pickaxe',
         name: '⛏️ Pickaxe',
         price: 7500,
-        description: 'Used for mining commands',
+        description: 'Digunakan untuk perintah pertambangan',
         type: 'tool',
         durability: 100,
         effect: {
@@ -90,7 +90,7 @@ roleId: null,
         id: 'laptop',
         name: '💻 Laptop',
         price: 15000,
-        description: 'Increases work earnings',
+        description: 'Meningkatkan penghasilan kerja',
         type: 'tool',
         durability: 200,
         effect: {
@@ -100,9 +100,9 @@ roleId: null,
     },
     {
         id: 'lucky_charm',
-        name: '🍀 Lucky Charm',
+        name: '🍀 Pesona Beruntung',
         price: 10000,
-        description: 'Increases luck for gambling. Has 3 uses before being consumed.',
+        description: 'Meningkatkan keberuntungan untuk berjudi. Memiliki 3 penggunaan sebelum habis.',
         type: 'consumable',
         maxQuantity: 10,
         effect: {
@@ -113,9 +113,9 @@ roleId: null,
     },
     {
         id: 'bank_note',
-        name: '📜 Bank Note',
+        name: '📜 Nota Bank',
         price: 25000,
-        description: 'Increases bank capacity by 10,000. Can be purchased multiple times.',
+        description: 'Meningkatkan kapasitas bank sebesar 10.000. Dapat dibeli berkali-kali.',
         type: 'tool',
         durability: null,
         effect: {
@@ -125,9 +125,9 @@ roleId: null,
     },
     {
         id: 'personal_safe',
-        name: '🔒 Personal Safe',
+        name: '🔒 Brankas Pribadi',
         price: 30000,
-        description: 'Protects your money from theft. Prevents others from robbing you.',
+        description: 'Melindungi uang mu dari pencurian. Mencegah orang lain merampok mu.',
         type: 'tool',
         durability: null,
         effect: {
@@ -153,7 +153,7 @@ export function getItemPrice(itemId) {
 export function validatePurchase(itemId, userData) {
     const item = getItemById(itemId);
     if (!item) {
-        return { valid: false, reason: 'Item not found' };
+        return { valid: false, reason: 'Item tidak ditemukan' };
     }
 
     const inventory = userData.inventory || {};
@@ -164,7 +164,7 @@ export function validatePurchase(itemId, userData) {
         if (currentQuantity >= item.maxQuantity) {
             return { 
                 valid: false, 
-                reason: `You can only have a maximum of ${item.maxQuantity} ${item.name}s` 
+                reason: `Kamu hanya bisa memiliki maksimal ${item.maxQuantity} ${item.name}` 
             };
         }
     }
@@ -174,7 +174,7 @@ export function validatePurchase(itemId, userData) {
         if (upgrades[itemId]) {
             return { 
                 valid: false, 
-                reason: `You've already purchased ${item.name}` 
+                reason: `Kamu sudah membeli ${item.name}` 
             };
         }
     }
@@ -185,7 +185,7 @@ export function validatePurchase(itemId, userData) {
         if (itemId !== 'bank_note' && currentQuantity > 0) {
             return { 
                 valid: false, 
-                reason: `You already have a ${item.name}` 
+                reason: `Kamu sudah memiliki ${item.name}` 
             };
         }
     }
@@ -194,7 +194,7 @@ export function validatePurchase(itemId, userData) {
         if (userData.roles?.includes(item.roleId)) {
             return { 
                 valid: false, 
-                reason: `You already have the ${item.name} role` 
+                reason: `Kamu sudah memiliki role ${item.name}` 
             };
         }
     }
